@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TopNote | کلون هوشمند و لوکس نوت‌بوک ریسرچ</title>
+  
+  <!-- فونت وزیرمتن و فونت کلاسیک سریف انگلیسی Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- آیکون‌های گوگل متریال سمبلز -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  
+  <!-- تیل‌ویند CSS از CDN رسمی -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            gold: {
+              300: '#f6e05e',
+              400: '#eec643',
+              500: '#c9a227',
+              600: '#b08b1a',
+              700: '#8c6d12',
+            },
+            obsidian: {
+              950: '#070707',
+              900: '#0c0c0d',
+              850: '#121214',
+              800: '#17171a',
+              700: '#232328',
+              600: '#32323a',
+            }
+          },
+          fontFamily: {
+            sans: ['Vazirmatn', 'system-ui', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      font-family: 'Vazirmatn', sans-serif;
+      background-color: #070707;
+      color: #e6e6e6;
+      overflow-x: hidden;
+    }
+    .font-brand {
+      font-family: 'Playfair Display', serif;
+    }
+    .gold-gradient-text {
+      background: linear-gradient(135deg, #fff3c4 0%, #eec643 50%, #b08b1a 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .gold-border-glow {
+      border: 1px solid rgba(201, 162, 39, 0.35);
+      box-shadow: 0 0 20px -3px rgba(201, 162, 39, 0.15);
+    }
+    .gold-glow-subtle {
+      box-shadow: 0 4px 20px -2px rgba(201, 162, 39, 0.25);
+    }
+    .glass-card {
+      background: rgba(18, 18, 20, 0.75);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card-hover {
+      transition: all 0.25s ease;
+    }
+    .glass-card-hover:hover {
+      border-color: rgba(201, 162, 39, 0.4);
+      transform: translateY(-2px);
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      vertical-align: middle;
+    }
+    .material-symbols-outlined.fill {
+      font-variation-settings: 'FILL' 1;
+    }
+    /* اسکرول‌بار سفارشی لوکس */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0c0c0d;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #232328;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #c9a227;
+    }
+    /* انیمیشن موج صوتی */
+    @keyframes soundwave {
+      0%, 100% { height: 6px; }
+      50% { height: 26px; }
+    }
+    .wave-bar {
+      animation: soundwave 1.2s ease-in-out infinite;
+    }
+    /* پنهان کردن صفحات */
+    .app-screen {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.2s ease-in-out;
+    }
+    .app-screen.active {
+      display: block;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body class="bg-obsidian-950 text-neutral-200 antialiased min-h-screen pb-24 md:pb-6 select-none md:select-auto">
+
+  <!-- ==================== HEADER اصلی و بالایی نرم‌افزار ==================== -->
+  <header class="sticky top-0 z-40 bg-obsidian-900/90 backdrop-blur-md border-b border-neutral-800/80 px-4 py-2.5 transition-all">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <!-- سمت راست: لوگو و هویت برند TopNote -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-gold-500/20 to-neutral-900 border border-gold-500/40 flex items-center justify-center shadow-lg shadow-gold-500/10">
+          <span class="material-symbols-outlined text-gold-400 text-2xl fill">auto_awesome</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-brand font-bold text-xl md:text-2xl gold-gradient-text tracking-wide">TopNote</span>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-gold-500/15 text-gold-400 border border-gold-500/30 font-medium">کلون هوشمند RAG</span>
+          </div>
+          <p class="text-[11px] text-neutral-400 hidden sm:block">سیستم پژوهش ژرف، سنتز اسناد چندرسانه‌ای و استودیو تولید دانش</p>
+        </div>
+      </div>
+
+      <!-- وسط: انتخابگر نوت‌بوک فعال -->
+      <div class="hidden md:flex items-center bg-obsidian-850 border border-neutral-800 rounded-xl px-3 py-1.5 gap-2">
+        <span class="material-symbols-outlined text-gold-400 text-sm">folder_open</span>
+        <select id="notebookSelector" onchange="switchNotebook(this.value)" class="bg-transparent text-xs text-neutral-200 focus:outline-none cursor-pointer">
+          <option value="ai" class="bg-obsidian-900 text-neutral-200">دفترچه ۱: کاربردهای هوش مصنوعی</option>
+          <option value="psych" class="bg-obsidian-900 text-neutral-200">دفترچه ۲: روانشناسی و توسعه فردی</option>
+          <option value="tech" class="bg-obsidian-900 text-neutral-200">دفترچه ۳: فناوری‌های پیشرفته نوین</option>
+        </select>
+        <span class="text-[10px] text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">همگام</span>
+      </div>
+
+      <!-- سمت چپ: اکشن‌ها و دکمه تنظیمات / نشان دانشگاهی -->
+      <div class="flex items-center gap-2">
+        <!-- بج شناسنامه علمی دکتر رضا مکرم -->
+        <div class="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gold-500/10 border border-gold-500/25 text-gold-300 text-xs">
+          <span class="material-symbols-outlined text-sm">school</span>
+          <span>تهیه و تنظیم: <b>دکتر رضا مکرم</b></span>
+        </div>
+
+        <!-- دکمه جابجایی تب تنظیمات -->
+        <button onclick="switchTab('settings')" title="تنظیمات API و پایگاه وکتور" class="p-2 rounded-xl bg-obsidian-850 hover:bg-obsidian-700 border border-neutral-800 text-neutral-300 hover:text-gold-400 transition-colors">
+          <span class="material-symbols-outlined text-lg">settings</span>
+        </button>
+        <!-- آواتار محقق -->
+        <div class="w-8 h-8 rounded-full bg-neutral-800 border border-neutral-700 flex items-center justify-center text-xs text-neutral-300 font-bold">
+          RM
+        </div>
+      </div>
+    </div>
+
+    <!-- نوار نوت‌بوک برای موبایل -->
+    <div class="md:hidden mt-2 pt-2 border-t border-neutral-850 flex items-center justify-between text-xs text-neutral-400">
+      <div class="flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-gold-400 text-xs">book</span>
+        <span id="mobileNotebookLabel" class="text-neutral-200 font-medium">کاربردهای هوش مصنوعی</span>
+      </div>
+      <span class="text-[10px] bg-gold-500/10 text-gold-400 px-2 py-0.5 rounded">دکتر رضا مکرم</span>
+    </div>
+  </header>
+
+  <!-- ==================== CONTAINER مرکزی صفحات ==================== -->
+  <main class="max-w-7xl mx-auto px-4 py-4 md:py-6">
+
+    <!-- 1️⃣ صفحه: گفتگو و RAG هوشمند (CHAT & RAG) -->
+    <section id="screen-chat" class="app-screen active">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- سایدبار سریع منابع و آمار RAG در دسکتاپ -->
+        <div class="hidden lg:block lg:col-span-3 space-y-4">
+          <div class="glass-card rounded-2xl p-4">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-bold text-neutral-300 flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-gold-400 text-sm">verified</span>
+                وضعیت زمینه RAG
+              </span>
+              <span class="text-[10px] bg-emerald-500/15 text-emerald-400 px-2 py-0.5 rounded-full font-medium">Grounding 99.2%</span>
+            </div>
+            <div class="space-y-2 text-xs">
+              <div class="p-2.5 rounded-xl bg-obsidian-850 border border-neutral-800/80">
+                <div class="flex justify-between text-neutral-400 mb-1">
+                  <span>منابع فعال دفترچه</span>
+                  <span class="text-gold-400 font-bold">۴ از ۵ منبع</span>
+                </div>
+                <div class="w-full bg-neutral-800 h-1.5 rounded-full overflow-hidden">
+                  <div class="bg-gold-500 h-full rounded-full" style="width: 80%"></div>
+                </div>
+              </div>
+              <div class="p-2.5 rounded-xl bg-obsidian-850 border border-neutral-800/80 text-[11px] text-neutral-400 space-y-1">
+                <div>• سند ۱: معماری جامع Mixture of Experts (PDF)</div>
+                <div>• سند ۲: راهکارهای بهینه‌سازی استنتاج VRAM</div>
+                <div>• سند ۳: مستندات شتاب‌دهنده سخت‌افزاری و ترانسفورمر</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-card rounded-2xl p-4 text-xs">
+            <span class="font-bold text-neutral-300 block mb-2 flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-gold-400 text-sm">bolt</span>
+              پیشنهادات سریع گفتگو
+            </span>
+            <div class="space-y-1.5">
+              <button onclick="askPreset('سازوکار مسیریابی خلوت (Sparse Gating) در MoE چگونه مانع انفجار حافظه می‌شود؟')" class="w-full text-right p-2 rounded-lg bg-obsidian-850 hover:bg-neutral-800 border border-neutral-800/60 text-neutral-300 transition-colors">
+                ⚡ نقش لایه Sparse Gating در MoE چیست؟
+              </button>
+              <button onclick="askPreset('تفاوت مقایسه‌ای FLOPs و VRAM را در دو مدل متراکم و تخصصی جدول‌بندی کن.')" class="w-full text-right p-2 rounded-lg bg-obsidian-850 hover:bg-neutral-800 border border-neutral-800/60 text-neutral-300 transition-colors">
+                📊 مقایسه مصرف حافظه متراکم در برابر MoE
+              </button>
+              <button onclick="askPreset('تکنیک‌های بهینه لایه‌ای Offloading به NVMe را شرح بده.')" class="w-full text-right p-2 rounded-lg bg-obsidian-850 hover:bg-neutral-800 border border-neutral-800/60 text-neutral-300 transition-colors">
+                🧠 تحلیل سناریوی آف‌لودینگ حافظه موقت
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- فید اصلی چت و تعامل هوش مصنوعی -->
+        <div class="lg:col-span-9 flex flex-col h-[75vh] md:h-[80vh] glass-card rounded-2xl overflow-hidden border border-neutral-800">
+          
+          <!-- هدر کوچک چت -->
+          <div class="px-4 py-3 bg-obsidian-900/90 border-b border-neutral-800 flex items-center justify-between text-xs">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-gold-400 text-base">forum</span>
+              <span class="font-semibold text-neutral-200">چت تعاملی نوت‌بوک (مستند و بدون توهم)</span>
+              <span class="text-[10px] bg-neutral-800 text-gold-300 px-2 py-0.5 rounded border border-gold-500/20">Gemini 2.5 Pro + RAG</span>
+            </div>
+            <button onclick="clearChat()" class="text-neutral-400 hover:text-rose-400 flex items-center gap-1">
+              <span class="material-symbols-outlined text-sm">refresh</span>
+              شروع مجدد چت
+            </button>
+          </div>
+
+          <!-- پیام‌های چت -->
+          <div id="chatMessageList" class="flex-1 overflow-y-auto p-4 space-y-4">
+            
+            <!-- پیام کاربر نمونه ۱ -->
+            <div class="flex justify-start">
+              <div class="max-w-[85%] bg-obsidian-850 border border-neutral-700/60 rounded-2xl rounded-tr-sm p-3.5 shadow-md">
+                <div class="flex items-center justify-between text-[11px] text-neutral-400 mb-1.5">
+                  <span class="font-medium text-gold-400">شما (پژوهشگر)</span>
+                  <span>۱۰:۴۲</span>
+                </div>
+                <p class="text-sm leading-relaxed text-neutral-200">
+                  تفاوت‌های کلیدی معماری ترانسفورمر استاندارد و مدل‌های مبتنی بر Mixture of Experts (MoE) در منابع ارائه شده چیست؟ آیا محدودیت‌های حافظه در منبع دوم ذکر شده؟
+                </p>
+              </div>
+            </div>
+
+            <!-- پاسخ هوش مصنوعی TopNote ۱ -->
+            <div class="flex justify-end">
+              <div class="max-w-[90%] bg-gradient-to-br from-obsidian-900 to-obsidian-850 border border-gold-500/30 rounded-2xl rounded-tl-sm p-4 shadow-xl gold-border-glow">
+                <div class="flex items-center justify-between text-[11px] text-neutral-400 mb-2 border-b border-neutral-800 pb-2">
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-gold-400 text-sm">psychology</span>
+                    <span class="font-bold text-gold-400">پژوهشگر هوشمند TopNote</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-[10px] bg-gold-500/10 text-gold-300 px-2 py-0.5 rounded border border-gold-500/20">RAG Confidence: 99.2%</span>
+                    <span class="text-emerald-400 text-xs">تطبیق با ۴ سند</span>
+                  </div>
+                </div>
+
+                <div class="text-sm leading-relaxed text-neutral-200 space-y-3">
+                  <p>
+                    بر اساس سند فنی شماره ۱، مدل‌های <b>Mixture of Experts (MoE)</b> با فعال‌سازی مشروط زیرشبکه‌ها تا <b>۶۵٪ مصرف توان محاسباتی</b> را در زمان استنتاج کاهش می‌دهند
+                    <button onclick="openCitationModal('src_001', 'گزارش فنی معماری MoE', 'صفحه ۱۲', 'در معماری تنک، لایه Gating تنها ۲ کارشناس برتر را از میان ۶۴ کارشناس فعال فراخوانی می‌کند که باعث کاهش محسوس زمان تأخیر FLOPs می‌شود.')" class="inline-flex items-center gap-1 mx-1 px-1.5 py-0.5 rounded bg-gold-500/20 text-gold-300 border border-gold-500/40 text-[11px] hover:bg-gold-500/30 cursor-pointer">
+                      <span class="material-symbols-outlined text-[12px]">bookmark</span> [src_001:3]
+                    </button>.
+                  </p>
+                  <p>
+                    با این حال، در بخش دوم سند اشاره شده که چالش بارگذاری حافظه VRAM همچنان پابرجاست و نیازمند راهکارهای آف‌لودینگ لایه‌ای اختصاصی است
+                    <button onclick="openCitationModal('src_002', 'راهکارهای بهینه‌سازی استنتاج و حافظه', 'صفحه ۵', 'بارگذاری تمام وزن‌های کارشناسان روی VRAM کارت‌های گرافیک در سناریوهای کم‌حافظه گلوگاه ایجاد می‌کند؛ راهکار پیشنهادی کوانتیزاسیون لایه‌ای به FP8 یا AWQ است.')" class="inline-flex items-center gap-1 mx-1 px-1.5 py-0.5 rounded bg-gold-500/20 text-gold-300 border border-gold-500/40 text-[11px] hover:bg-gold-500/30 cursor-pointer">
+                      <span class="material-symbols-outlined text-[12px]">bookmark</span> [src_002:1]
+                    </button>.
+                  </p>
+
+                  <!-- جعبه مقایسه‌ای ویژه استخراج داده -->
+                  <div class="p-3 rounded-xl bg-obsidian-950/80 border border-neutral-800 text-xs space-y-2">
+                    <div class="font-bold text-gold-400 flex items-center justify-between">
+                      <span>مقایسه برداری مصرف منابع (برگرفته از اسناد ۱ و ۲)</span>
+                      <span class="text-[10px] text-neutral-400">P-FLOPs vs VRAM</span>
+                    </div>
+                    <div class="space-y-1 text-neutral-300">
+                      <div class="flex justify-between">
+                        <span>بار پردازشی استاندارد Dense:</span>
+                        <span class="text-neutral-200">۱۰۰٪ (پایه)</span>
+                      </div>
+                      <div class="flex justify-between">
+                        <span>بار پردازشی MoE با روتینگ Sparse:</span>
+                        <span class="text-emerald-400 font-bold">۳۵٪ (۶۵٪ کاهش)</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- بج تضمین عدم توهم -->
+                  <div class="flex items-center justify-between pt-1 text-[11px] text-neutral-400">
+                    <span class="flex items-center gap-1 text-amber-400/90">
+                      <span class="material-symbols-outlined text-sm">shield</span>
+                      استناد منبع‌محور (Zero Hallucination Guaranteed)
+                    </span>
+                    <div class="flex items-center gap-2">
+                      <button onclick="copyCurrentAnswer()" class="hover:text-gold-400" title="کپی متن">
+                        <span class="material-symbols-outlined text-sm">content_copy</span>
+                      </button>
+                      <button onclick="saveToNotes()" class="hover:text-gold-400" title="پین در یادداشت‌ها">
+                        <span class="material-symbols-outlined text-sm">push_pin</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- اینپوت چت و باکس ارسال پیام -->
+          <div class="p-3 bg-obsidian-900 border-t border-neutral-800">
+            <div class="flex items-center gap-2 bg-obsidian-850 border border-neutral-700/80 rounded-2xl px-3 py-1.5 focus-within:border-gold-500/80 transition-all">
+              <button onclick="toggleAudioInput()" id="micBtn" class="text-neutral-400 hover:text-gold-400 transition-colors p-1" title="ورودی صوتی / دیکته">
+                <span class="material-symbols-outlined text-xl">mic</span>
+              </button>
+              <button onclick="switchTab('sources')" class="text-neutral-400 hover:text-gold-400 transition-colors p-1" title="افزودن سند یا فایل">
+                <span class="material-symbols-outlined text-xl">attach_file</span>
+              </button>
+              <input type="text" id="chatInput" placeholder="از منابع بارگذاری‌شده در این دفترچه هر سؤالی دارید بپرسید..." onkeydown="if(event.key==='Enter') sendChatMessage()" class="flex-1 bg-transparent text-sm text-neutral-100 placeholder-neutral-500 focus:outline-none px-2 py-1">
+              <button onclick="sendChatMessage()" class="p-2 rounded-xl bg-gold-500 hover:bg-gold-400 text-obsidian-950 font-bold transition-all shadow-md shadow-gold-500/20">
+                <span class="material-symbols-outlined text-xl">arrow_upward</span>
+              </button>
+            </div>
+            <div class="flex items-center justify-between text-[11px] text-neutral-500 mt-2 px-1">
+              <span>هسته استنتاج: Google Gemini 2.5 Pro • وکتور محلی AES-256</span>
+              <span>دکتر رضا مکرم • عضو هیئت علمی دانشگاه</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- 2️⃣ صفحه: استودیوی خروجی‌های هشت‌گانه (STUDIO) -->
+    <section id="screen-studio" class="app-screen">
+      <div class="space-y-6">
+        
+        <!-- بنر طلایی خوش‌آمدگویی و معرفی استودیو -->
+        <div class="glass-card rounded-2xl p-5 md:p-6 border border-gold-500/30 gold-border-glow relative overflow-hidden">
+          <div class="absolute -left-12 -top-12 w-48 h-48 bg-gold-500/10 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-2 mb-1.5">
+                <span class="px-2.5 py-0.5 rounded-full bg-gold-500/20 text-gold-400 border border-gold-500/40 text-xs font-semibold">استودیوی تولید دانش هوشمند</span>
+                <span class="text-xs text-neutral-400">۸ فرمت تحلیلی سنتز شده</span>
+              </div>
+              <h1 class="text-xl md:text-2xl font-bold text-neutral-100">تبدیل هوشمند متون پژوهشی به آرتفکت‌های عملیاتی</h1>
+              <p class="text-xs md:text-sm text-neutral-300 mt-1 max-w-2xl leading-relaxed">
+                تمام خروجی‌ها ۱۰۰٪ مستند بر منابع اعتبارسنجی شده شما سنتز می‌شوند. بدون نیاز به ابزار جانبی، پادکست گوش دهید، اسلاید بسازید یا فلش‌کارت مرور کنید.
+              </p>
+            </div>
+            <div class="bg-obsidian-850/80 p-3 rounded-xl border border-neutral-800 text-xs text-neutral-300 space-y-1 self-stretch md:self-auto min-w-[200px]">
+              <div class="text-gold-400 font-bold flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm">verified_user</span>
+                پروژه پژوهشی TopNote
+              </div>
+              <div>ناظر علمی: <b>دکتر رضا مکرم</b></div>
+              <div class="text-[11px] text-neutral-400">عضو هیئت علمی دانشگاه</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- گرید کارت‌های ۸ گانه استودیو -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+          <!-- ۱. پادکست صوتی هوشمند (Audio Overview) -->
+          <div onclick="switchTab('podcast')" class="glass-card glass-card-hover rounded-2xl p-4 border border-gold-500/30 cursor-pointer flex flex-col justify-between group">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <div class="w-10 h-10 rounded-xl bg-gold-500/15 border border-gold-500/30 flex items-center justify-center text-gold-400">
+                  <span class="material-symbols-outlined text-2xl">podcasts</span>
+                </div>
+                <span class="text-[10px] bg-gold-500/20 text-gold-300 px-2 py-0.5 rounded font-bold">محبوب‌ترین</span>
+              </div>
+              <h3 class="font-bold text-base text-neutral-100 group-hover:text-gold-400 transition-colors">پادکست صوتی هوشمند (Audio Overview)</h3>
+              <p class="text-xs text-neutral-400 mt-1.5 leading-relaxed">
+                اسکریپت و مکالمه دوانفر پژوهشی جذاب میان پژوهشگر ارشد و تحلیلگر داده با لهجه طبیعی و سنتز صوت استودیویی.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-neutral-800/80 flex items-center justify-between text-xs text-gold-400 font-medium">
+              <span>مدت: ۱۰:۴۵ دقیقه</span>
+              <span class="flex items-center gap-1">شنیدن پادکست <span class="material-symbols-outlined text-sm">arrow_back</span></span>
+            </div>
+          </div>
+
+          <!-- ۲. اسلاید دک سخنرانی (Slide Deck) -->
+          <div onclick="switchTab('slides')" class="glass-card glass-card-hover rounded-2xl p-4 border border-neutral-800 hover:border-gold-500/40 cursor-pointer flex flex-col justify-between group">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400">
+                  <span class="material-symbols-outlined text-2xl">slideshow</span>
+                </div>
+                <span class="text-[10px] bg-neutral-800 text-neutral-300 px-2 py-0.5 rounded">۸ اسلاید</span>
+              </div>
+              <h3 class="font-bold text-base text-neutral-100 group-hover:text-gold-400 transition-colors">اسلاید دک سخنرانی (Slide Deck)</h3>
+              <p class="text-xs text-neutral-400 mt-1.5 leading-relaxed">
+                طراحی ساختار اسلاید حرفه‌ای به همراه Speaker Notes، دیاگرام معماری لایه‌ای و استناد دقیق سلولی برای دفاع و سمینار.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-neutral-800/80 flex items-center justify-between text-xs text-neutral-400 group-hover:text-gold-400">
+              <span>فرمت: PDF / PPTX</span>
+              <span class="flex items-center gap-1">نمایش اسلایدها <span class="material-symbols-outlined text-sm">arrow_back</span></span>
+            </div>
+          </div>
+
+          <!-- ۳. فلش‌کارت‌های مرور فعال و آزمون هوشمند (Flashcards & Quiz) -->
+          <div onclick="switchTab('flashcards')" class="glass-card glass-card-hover rounded-2xl p-4 border border-gold-500/30 cursor-pointer flex flex-col justify-between group">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <div class="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                  <span class="material-symbols-outlined text-2xl">style</span>
+                </div>
+                <span class="text-[10px] bg-emerald-500/15 text-emerald-400 px-2 py-0.5 rounded">SM-2 Spaced</span>
+              </div>
+              <h3 class="font-bold text-base text-neutral-100 group-hover:text-gold-400 transition-colors">فلش‌کارت‌ها و کوئیز (Active Recall)</h3>
+              <p class="text-xs text-neutral-400 mt-1.5 leading-relaxed">
+                الگوریتم لایتنر پیشرفته جهت تثبیت در حافظه بلندمدت با سوالات تحلیلی و آزمون تستی خودکار همراه دانلود Anki.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-neutral-800/80 flex items-center justify-between text-xs text-gold-400 font-medium">
+              <span>۱۲ کارت مرور + تست</span>
+              <span class="flex items-center gap-1">شروع مرور <span class="material-symbols-outlined text-sm">arrow_back</span></span>
+            </div>
+          </div>
+
+          <!-- ۴. اینفوگرافیک و بنتو گرید تحلیلی (Bento Grid) -->
+          <div onclick="alert('قابلیت اینفوگرافیک بنتو گرید در نسخه فعلی به همراه سایر خروجی‌ها در دسترس است.')" class="glass-card glass-card-hover rounded-2xl p-4 border border-neutral-800 hover:border-gold-500/40 cursor-pointer flex flex-col justify-between group">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <div class="w-10 h-10 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400">
+                  <span class="material-symbols-outlined text-2xl">dashboard_customize</span>
+                </div>
+                <span class="text-[10px] bg-neutral-800 text-neutral-300 px-2 py-0.5 rounded">Bento Visual</span>
+              </div>
+              <h3 class="font-bold text-base text-neutral-100 group-hover:text-gold-400 transition-colors">اینفوگرافیک بنتو گرید (Bento Infographic)</h3>
+              <p class="text-xs text-neutral-400 mt-1.5 leading-relaxed">
+                چیدمان بلوک‌های مقایسه‌ای بصری جهت ارائه خلاصه‌های آماری، جریان داده‌ها و مشخصات فنی کلیدی.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-neutral-800/80 flex items-center justify-between text-xs text-neutral-400">
+              <span>وضوح ۴K SVG/PNG</span>
+              <span class="flex items-center gap-1">تولید طرح <span class="material-symbols-outlined text-sm">arrow_back</span></span>
+            </div>
+          </div>
+
+          <!-- ۵. نقشه ذهنی و درخت سلسله‌مراتب (Mind Map) -->
+          <div onclick="alert('نقشه ذهنی سلسله‌مراتبی تولید شده و قابلیت دانلود فرمت Mermaid و Markdown آماده است.')" class="glass-card glass-card-hover rounded-2xl p-4 border border-neutral-800 hover:border-gold-500/40 cursor-pointer flex flex-col justify-between group">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <div class="w-10 h-10 rounded-xl bg-pink-500/15 border border-pink-500/30 flex items-center justify-center text-pink-400">
+                  <span class="material-symbols-outlined text-2xl">account_tree</span>
+                </div>
+                <span class="text-[10px] bg-neutral-800 text-neutral-300 px-2 py-0.5 rounded">۴ لایه عمق</span>
+              </div>
+              <h3 class="font-bold text-base text-neutral-100 group-hover:text-gold-400 transition-colors">نقشه ذهنی ساختاریافته (Mind Map)</h3>
+              <p class="text-xs text-neutral-400 mt-1.5 leading-relaxed">
+                ترسیم روابط علی-معلولی و خوشه‌بندی مفاهیم منابع با فرمت داینامیک قابل رندر در نرم‌افزارهای Obsidian و Notion.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-neutral-800/80 flex items-center justify-between text-xs text-neutral-400">
+              <span>فرمت Mermaid / MD</span>
+              <span class="flex items-center gap-1">مشاهده درخت <span class="material-symbols-outlined text-sm">arrow_back</span></span>
+            </div>
+          </div>
+
+          <!-- ۶. خلاصه مدیریتی فشرده (Briefing Doc) -->
+          <div onclick="alert('خلاصه اجرایی جامع در ۱ صفحه مستند با بالاترین سطح دقت استنادی آماده است.')" class="glass-card glass-card-hover rounded-2xl p-4 border border-neutral-800 hover:border-gold-500/40 cursor-pointer flex flex-col justify-between group">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                  <span class="material-symbols-outlined text-2xl">description</span>
+                </div>
+                <span class="text-[10px] bg-neutral-800 text-neutral-300 px-2 py-0.5 rounded">۱ صفحه‌ای فشرده</span>
+              </div>
+              <h3 class="font-bold text-base text-neutral-100 group-hover:text-gold-400 transition-colors">خلاصه مدیریتی (Executive Briefing)</h3>
+              <p class="text-xs text-neutral-400 mt-1.5 leading-relaxed">
+                سنتز پرسرعت متراکم برای مدیران ارشد شامل اهداف، چالش‌های عملیاتی، فرصت‌های راهبردی و چکیده نتایج.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-neutral-800/80 flex items-center justify-between text-xs text-neutral-400">
+              <span>سند اداری PDF</span>
+              <span class="flex items-center gap-1">دانلود سند <span class="material-symbols-outlined text-sm">arrow_back</span></span>
+            </div>
+          </div>
+
+          <!-- ۷. ماتریس مقایسه‌ای و استخراج جدول (Comparative Table) -->
+          <div onclick="alert('ماتریس و جداول عددی استخراج شده با فرمت CSV و اکسل آماده دانلود هستند.')" class="glass-card glass-card-hover rounded-2xl p-4 border border-neutral-800 hover:border-gold-500/40 cursor-pointer flex flex-col justify-between group">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <div class="w-10 h-10 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+                  <span class="material-symbols-outlined text-2xl">table_chart</span>
+                </div>
+                <span class="text-[10px] bg-neutral-800 text-neutral-300 px-2 py-0.5 rounded">فرمت CSV / MD</span>
+              </div>
+              <h3 class="font-bold text-base text-neutral-100 group-hover:text-gold-400 transition-colors">ماتریس استخراج داده (Data Extraction)</h3>
+              <p class="text-xs text-neutral-400 mt-1.5 leading-relaxed">
+                استخراج خودکار جدول ارقام، پارامترهای عملکردی و درصدها از دل متون بدون خطا با کدگذاری مقایسه‌ای.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-neutral-800/80 flex items-center justify-between text-xs text-neutral-400">
+              <span>سازگار با اکسل</span>
+              <span class="flex items-center gap-1">استخراج داده <span class="material-symbols-outlined text-sm">arrow_back</span></span>
+            </div>
+          </div>
+
+          <!-- ۸. راهنمای سوالات مصاحبه و دفاعیه (Defense Q&A) -->
+          <div onclick="alert('راهنمای تخصصی پاسخ به چالش‌های اساتید داور و مخاطبان سمینار آماده شد.')" class="glass-card glass-card-hover rounded-2xl p-4 border border-neutral-800 hover:border-gold-500/40 cursor-pointer flex flex-col justify-between group">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <div class="w-10 h-10 rounded-xl bg-orange-500/15 border border-orange-500/30 flex items-center justify-center text-orange-400">
+                  <span class="material-symbols-outlined text-2xl">quiz</span>
+                </div>
+                <span class="text-[10px] bg-neutral-800 text-neutral-300 px-2 py-0.5 rounded">پیش‌بینی انتقادات</span>
+              </div>
+              <h3 class="font-bold text-base text-neutral-100 group-hover:text-gold-400 transition-colors">پرسش‌های داوری و دفاعیه (Defense Q&A)</h3>
+              <p class="text-xs text-neutral-400 mt-1.5 leading-relaxed">
+                شبیه‌سازی سوالات سخت و نقادانه هیئت داوران یا مخاطبان به همراه پاسخ‌های استنادی دندان‌شکن مستند بر اسناد.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-neutral-800/80 flex items-center justify-between text-xs text-neutral-400">
+              <span>۲۰ سوال چالشی</span>
+              <span class="flex items-center gap-1">مطالعه دفاعیه <span class="material-symbols-outlined text-sm">arrow_back</span></span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- 3️⃣ صفحه: مدیریت و پردازش منابع (SOURCES & VECTOR REPO) -->
+    <section id="screen-sources" class="app-screen">
+      <div class="space-y-6">
+        
+        <!-- نوار وضعیت وکتور دیتابیس و ظرفیت -->
+        <div class="glass-card rounded-2xl p-4 md:p-5 border border-neutral-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="material-symbols-outlined text-gold-400 text-lg">database</span>
+              <h2 class="font-bold text-base text-neutral-100">پایگاه داده برداری محلی (In-Memory Vector Store)</h2>
+              <span class="text-[10px] bg-emerald-500/15 text-emerald-400 px-2 py-0.5 rounded font-medium">فعال و رمزنگاری شده</span>
+            </div>
+            <p class="text-xs text-neutral-400">متون پس از چانکینگ ۱۰۰۰ توکنی با مدل text-embedding-004 وکتورایز شده و در کش مرورگر نگهداری می‌شوند.</p>
+          </div>
+          <div class="flex items-center gap-4 bg-obsidian-850 px-4 py-2.5 rounded-xl border border-neutral-800 text-xs">
+            <div>
+              <span class="text-neutral-400 block text-[10px]">تعداد منابع:</span>
+              <span class="font-bold text-gold-400 text-sm">۵ سند فعال</span>
+            </div>
+            <div class="w-px h-8 bg-neutral-700"></div>
+            <div>
+              <span class="text-neutral-400 block text-[10px]">تعداد قطعات (Chunks):</span>
+              <span class="font-bold text-neutral-100 text-sm">۱,۸۴۲ قطعه</span>
+            </div>
+            <div class="w-px h-8 bg-neutral-700"></div>
+            <div>
+              <span class="text-neutral-400 block text-[10px]">حجم رم مصرفی:</span>
+              <span class="font-bold text-neutral-100 text-sm">۱۴.۶ مگابایت</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- باکس دراگ و دراپ برای بارگذاری فایل جدید -->
+        <div class="border-2 border-dashed border-neutral-700 hover:border-gold-500/60 rounded-2xl p-6 text-center bg-obsidian-900/60 hover:bg-obsidian-850/80 transition-all cursor-pointer" onclick="document.getElementById('fileUploadInput').click()">
+          <input type="file" id="fileUploadInput" class="hidden" onchange="handleFileUpload(event)">
+          <div class="w-12 h-12 rounded-2xl bg-gold-500/10 text-gold-400 border border-gold-500/30 flex items-center justify-center mx-auto mb-3">
+            <span class="material-symbols-outlined text-2xl">cloud_upload</span>
+          </div>
+          <h3 class="font-bold text-sm text-neutral-200">بارگذاری یا کشیدن اسناد به این بخش</h3>
+          <p class="text-xs text-neutral-400 mt-1">پشتیبانی از PDF، فایل‌های متنی TXT/DOCX، لینک یوتیوب، صفحات وب و فایل صوتی جهت پیاده‌سازی Whisper</p>
+          <div class="flex items-center justify-center gap-2 mt-4">
+            <button class="px-4 py-1.5 rounded-xl bg-gold-500 hover:bg-gold-400 text-obsidian-950 text-xs font-bold transition-all shadow-md">
+              + انتخاب و افزودن سند
+            </button>
+            <button onclick="event.stopPropagation(); promptYoutubeUrl()" class="px-3 py-1.5 rounded-xl bg-obsidian-800 hover:bg-neutral-700 text-neutral-300 text-xs border border-neutral-700 transition-all">
+              افزودن لینک یوتیوب
+            </button>
+            <button onclick="event.stopPropagation(); promptWebUrl()" class="px-3 py-1.5 rounded-xl bg-obsidian-800 hover:bg-neutral-700 text-neutral-300 text-xs border border-neutral-700 transition-all">
+              اسکرپ صفحه وب
+            </button>
+          </div>
+        </div>
+
+        <!-- فهرست اسناد فعال در سیستم -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between text-xs text-neutral-400 px-1">
+            <span class="font-bold text-neutral-300">اسناد بارگذاری‌شده در دفترچه فعال:</span>
+            <span>انتخاب شده: ۴ از ۵</span>
+          </div>
+
+          <!-- سند ۱ -->
+          <div class="glass-card rounded-xl p-3.5 flex items-center justify-between border border-neutral-800 hover:border-neutral-700">
+            <div class="flex items-center gap-3">
+              <input type="checkbox" checked class="w-4 h-4 accent-gold-500 rounded cursor-pointer">
+              <div class="w-9 h-9 rounded-lg bg-rose-500/15 border border-rose-500/30 text-rose-400 flex items-center justify-center text-sm font-bold">
+                PDF
+              </div>
+              <div>
+                <h4 class="text-xs font-bold text-neutral-200">مقاله جامع معماری Mixture of Experts (DeepSeek-V3).pdf</h4>
+                <div class="flex items-center gap-3 text-[11px] text-neutral-400 mt-0.5">
+                  <span class="text-emerald-400">● آماده (Ready)</span>
+                  <span>۱۲ چانک</span>
+                  <span>۸۰۰ توکن میانگین</span>
+                  <span>۱.۲ مگابایت</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="viewChunks(1)" class="px-2.5 py-1 rounded bg-obsidian-850 hover:bg-neutral-800 text-xs text-neutral-300 border border-neutral-800 flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm">visibility</span> چانک‌ها
+              </button>
+              <button onclick="removeDoc(1)" class="p-1 rounded text-neutral-400 hover:text-rose-400">
+                <span class="material-symbols-outlined text-sm">delete</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- سند ۲ -->
+          <div class="glass-card rounded-xl p-3.5 flex items-center justify-between border border-neutral-800 hover:border-neutral-700">
+            <div class="flex items-center gap-3">
+              <input type="checkbox" checked class="w-4 h-4 accent-gold-500 rounded cursor-pointer">
+              <div class="w-9 h-9 rounded-lg bg-blue-500/15 border border-blue-500/30 text-blue-400 flex items-center justify-center text-sm font-bold">
+                DOC
+              </div>
+              <div>
+                <h4 class="text-xs font-bold text-neutral-200">گزارش راهکارهای بهینه‌سازی استنتاج و مدیریت مصرف VRAM.docx</h4>
+                <div class="flex items-center gap-3 text-[11px] text-neutral-400 mt-0.5">
+                  <span class="text-emerald-400">● آماده (Ready)</span>
+                  <span>۸ چانک</span>
+                  <span>۶۵۰ توکن</span>
+                  <span>۴۸۰ کیلوبایت</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="viewChunks(2)" class="px-2.5 py-1 rounded bg-obsidian-850 hover:bg-neutral-800 text-xs text-neutral-300 border border-neutral-800 flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm">visibility</span> چانک‌ها
+              </button>
+              <button onclick="removeDoc(2)" class="p-1 rounded text-neutral-400 hover:text-rose-400">
+                <span class="material-symbols-outlined text-sm">delete</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- سند ۳ -->
+          <div class="glass-card rounded-xl p-3.5 flex items-center justify-between border border-neutral-800 hover:border-neutral-700">
+            <div class="flex items-center gap-3">
+              <input type="checkbox" checked class="w-4 h-4 accent-gold-500 rounded cursor-pointer">
+              <div class="w-9 h-9 rounded-lg bg-red-500/15 border border-red-500/30 text-red-400 flex items-center justify-center text-sm font-bold">
+                <span class="material-symbols-outlined text-base">smart_display</span>
+              </div>
+              <div>
+                <h4 class="text-xs font-bold text-neutral-200">ویدیو یوتیوب: تحلیل مهندسی ترانسفورمرها و زیرشبکه‌ها</h4>
+                <div class="flex items-center gap-3 text-[11px] text-neutral-400 mt-0.5">
+                  <span class="text-emerald-400">● استخراج زیرنویس</span>
+                  <span>۷ چانک</span>
+                  <span>۲۸ دقیقه</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="viewChunks(3)" class="px-2.5 py-1 rounded bg-obsidian-850 hover:bg-neutral-800 text-xs text-neutral-300 border border-neutral-800 flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm">visibility</span> چانک‌ها
+              </button>
+              <button onclick="removeDoc(3)" class="p-1 rounded text-neutral-400 hover:text-rose-400">
+                <span class="material-symbols-outlined text-sm">delete</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- سند ۴ -->
+          <div class="glass-card rounded-xl p-3.5 flex items-center justify-between border border-neutral-800 hover:border-neutral-700">
+            <div class="flex items-center gap-3">
+              <input type="checkbox" class="w-4 h-4 accent-gold-500 rounded cursor-pointer">
+              <div class="w-9 h-9 rounded-lg bg-purple-500/15 border border-purple-500/30 text-purple-400 flex items-center justify-center text-sm font-bold">
+                <span class="material-symbols-outlined text-base">mic</span>
+              </div>
+              <div>
+                <h4 class="text-xs font-bold text-neutral-200">فایل صوتی مصاحبه با تیم پژوهشی هوش مصنوعی.mp3</h4>
+                <div class="flex items-center gap-3 text-[11px] text-neutral-400 mt-0.5">
+                  <span class="text-amber-400">● رونویسی Whisper ASR</span>
+                  <span>۱۵ چانک</span>
+                  <span>۴.۸ مگابایت</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="viewChunks(4)" class="px-2.5 py-1 rounded bg-obsidian-850 hover:bg-neutral-800 text-xs text-neutral-300 border border-neutral-800 flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm">visibility</span> چانک‌ها
+              </button>
+              <button onclick="removeDoc(4)" class="p-1 rounded text-neutral-400 hover:text-rose-400">
+                <span class="material-symbols-outlined text-sm">delete</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- 4️⃣ صفحه: پادکست صوتی هوشمند (AUDIO OVERVIEW) -->
+    <section id="screen-podcast" class="app-screen">
+      <div class="max-w-4xl mx-auto space-y-6">
+        
+        <!-- کارت اصلی پلیر پادکست به سبک اختصاصی TopNoteHD -->
+        <div class="glass-card rounded-3xl p-6 border border-gold-500/40 gold-border-glow relative overflow-hidden">
+          <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+            
+            <!-- تصویر و کاور دیسک صوتی -->
+            <div class="w-28 h-28 rounded-2xl bg-gradient-to-tr from-obsidian-900 to-gold-500/20 border-2 border-gold-500/50 flex flex-col items-center justify-center shadow-xl shadow-gold-500/20 relative">
+              <span class="material-symbols-outlined text-gold-400 text-4xl mb-1">graphic_eq</span>
+              <span class="text-[9px] text-gold-300 font-bold uppercase tracking-wider">TopNote HD</span>
+              <div class="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-emerald-500 border-2 border-obsidian-950"></div>
+            </div>
+
+            <!-- اطلاعات اپیزود پادکست -->
+            <div class="flex-1 text-center md:text-right">
+              <div class="flex items-center justify-center md:justify-start gap-2 mb-2">
+                <span class="px-2.5 py-0.5 rounded-full bg-gold-500/15 text-gold-400 text-[11px] font-semibold border border-gold-500/30">سنتز صوت استودیویی دوانفر</span>
+                <span class="text-[11px] text-neutral-400">استناد به ۴ سند اصلی</span>
+              </div>
+              <h2 class="text-lg md:text-xl font-bold text-neutral-100">تحلیل ژرف: اسرار مهندسی Mixture of Experts و مهار حافظه VRAM</h2>
+              <p class="text-xs text-neutral-400 mt-1">
+                گفتگوی علمی میان <b>آرش (پژوهشگر ارشد معمار هوش مصنوعی)</b> و <b>رویا (تحلیلگر سیستم‌های یادگیری عمیق)</b>
+              </p>
+              <div class="text-[11px] text-gold-400/90 mt-2">
+                تهیه و هدایت علمی: <b>دکتر رضا مکرم</b> • عضو هیئت علمی دانشگاه
+              </div>
+            </div>
+
+            <!-- دکمه‌های دانلود -->
+            <div class="flex flex-col gap-2 w-full md:w-auto">
+              <button onclick="alert('دانلود فایل صوتی کامل با فرمت MP3 (320kbps) آغاز شد.')" class="px-4 py-2 rounded-xl bg-gold-500 hover:bg-gold-400 text-obsidian-950 font-bold text-xs flex items-center justify-center gap-1.5 shadow-lg shadow-gold-500/20">
+                <span class="material-symbols-outlined text-base">download</span>
+                دریافت MP3 (320kbps)
+              </button>
+              <button onclick="alert('متن کامل و سناریو پادکست در فرمت Markdown کپی شد.')" class="px-4 py-2 rounded-xl bg-obsidian-850 hover:bg-neutral-800 text-neutral-300 text-xs border border-neutral-700 flex items-center justify-center gap-1.5">
+                <span class="material-symbols-outlined text-base">article</span>
+                اسکریپت و رونویسی Markdown
+              </button>
+            </div>
+          </div>
+
+          <!-- ویژوالایزر موج صوتی لوکس -->
+          <div class="mt-6 pt-5 border-t border-neutral-800/80">
+            <div class="flex items-center justify-center gap-1 h-8 px-4" id="soundwaveContainer">
+              <div class="w-1 bg-gold-500 rounded-full wave-bar" style="animation-delay: 0.1s"></div>
+              <div class="w-1 bg-gold-400 rounded-full wave-bar" style="animation-delay: 0.3s"></div>
+              <div class="w-1 bg-gold-600 rounded-full wave-bar" style="animation-delay: 0.5s"></div>
+              <div class="w-1 bg-gold-400 rounded-full wave-bar" style="animation-delay: 0.2s"></div>
+              <div class="w-1 bg-gold-300 rounded-full wave-bar" style="animation-delay: 0.4s"></div>
+              <div class="w-1 bg-gold-500 rounded-full wave-bar" style="animation-delay: 0.6s"></div>
+              <div class="w-1 bg-gold-400 rounded-full wave-bar" style="animation-delay: 0.15s"></div>
+              <div class="w-1 bg-gold-300 rounded-full wave-bar" style="animation-delay: 0.35s"></div>
+              <div class="w-1 bg-gold-500 rounded-full wave-bar" style="animation-delay: 0.55s"></div>
+              <div class="w-1 bg-gold-400 rounded-full wave-bar" style="animation-delay: 0.25s"></div>
+              <div class="w-1 bg-neutral-600 rounded-full h-2"></div>
+              <div class="w-1 bg-neutral-600 rounded-full h-3"></div>
+              <div class="w-1 bg-neutral-700 rounded-full h-1.5"></div>
+              <div class="w-1 bg-neutral-700 rounded-full h-2"></div>
+              <div class="w-1 bg-neutral-700 rounded-full h-1"></div>
+            </div>
+
+            <!-- نوار پیشرفت و کنترل‌ها -->
+            <div class="mt-4 space-y-2">
+              <div class="flex items-center justify-between text-xs text-neutral-400">
+                <span id="podcastCurrentTime">۰۳:۲۴</span>
+                <div class="flex-1 mx-4">
+                  <div class="w-full bg-neutral-800 h-2 rounded-full cursor-pointer relative overflow-hidden" onclick="seekPodcast(event)">
+                    <div id="podcastProgressBar" class="bg-gradient-to-r from-gold-600 to-gold-400 h-full rounded-full" style="width: 32%"></div>
+                  </div>
+                </div>
+                <span>۱۰:۴۵</span>
+              </div>
+
+              <!-- کلیدهای کنترل پلیر -->
+              <div class="flex items-center justify-center gap-4 pt-2">
+                <button onclick="speedPodcast()" id="speedBtn" class="text-xs px-2.5 py-1 rounded bg-obsidian-850 hover:bg-neutral-800 text-neutral-300 border border-neutral-800">
+                  1.25x
+                </button>
+                <button onclick="skipPodcast(-15)" class="text-neutral-400 hover:text-gold-400" title="۱۵ ثانیه عقب">
+                  <span class="material-symbols-outlined text-2xl">replay_10</span>
+                </button>
+                <button onclick="togglePlayPodcast()" id="playPauseBtn" class="w-12 h-12 rounded-full bg-gold-500 hover:bg-gold-400 text-obsidian-950 flex items-center justify-center shadow-lg shadow-gold-500/30 transition-all">
+                  <span class="material-symbols-outlined text-2xl fill">pause</span>
+                </button>
+                <button onclick="skipPodcast(15)" class="text-neutral-400 hover:text-gold-400" title="۱۵ ثانیه جلو">
+                  <span class="material-symbols-outlined text-2xl">forward_10</span>
+                </button>
+                <button onclick="alert('کیفیت خروجی روی استریو ۲۴ بیت TopNoteHD پایدار است.')" class="text-xs px-2 py-1 text-gold-400">
+                  <span class="material-symbols-outlined text-lg">hd</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- متن زنده و دیالوگ تفکیک‌شده اپیزود -->
+        <div class="glass-card rounded-2xl p-5 border border-neutral-800 space-y-4">
+          <div class="flex items-center justify-between border-b border-neutral-800 pb-3">
+            <h3 class="font-bold text-sm text-neutral-200 flex items-center gap-2">
+              <span class="material-symbols-outlined text-gold-400 text-base">forum</span>
+              متن زنده و دیالوگ هماهنگ با پخش (Transcript)
+            </h3>
+            <span class="text-xs text-neutral-400">کلیک روی هر دیالوگ = پرش به ثانیه مربوطه</span>
+          </div>
+
+          <!-- خط ۱ -->
+          <div onclick="jumpToSecond(180)" class="p-3 rounded-xl bg-obsidian-850/60 hover:bg-obsidian-850 border border-neutral-800/80 cursor-pointer transition-all">
+            <div class="flex items-center justify-between text-xs mb-1">
+              <span class="font-bold text-blue-400 flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs">play_circle</span> آرش (پژوهشگر معمار):
+              </span>
+              <span class="text-[11px] text-neutral-500">۰۳:۰۵</span>
+            </div>
+            <p class="text-xs md:text-sm text-neutral-300 leading-relaxed">
+              «دقیقاً رویا. کلید درک بازدهی MoE در این است که همه پارامترها همزمان بیدار نیستند. برخلاف مدل‌های متراکم قدیمی، شبکه مسیریاب گیتینگ تنها ۲ کارشناس برتر را از میان ۶۴ کارشناس فعال فراخوانی می‌کند...»
+            </p>
+          </div>
+
+          <!-- خط ۲ (فعال در حال حاضر) -->
+          <div onclick="jumpToSecond(204)" class="p-3 rounded-xl bg-gold-500/10 border border-gold-500/40 cursor-pointer transition-all gold-border-glow">
+            <div class="flex items-center justify-between text-xs mb-1">
+              <span class="font-bold text-gold-400 flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs fill">volume_up</span> رویا (تحلیلگر):
+              </span>
+              <span class="text-[11px] text-gold-300">۰۳:۲۴ (اکنون)</span>
+            </div>
+            <p class="text-xs md:text-sm text-neutral-200 leading-relaxed font-medium">
+              «اما یک چالش بزرگ زیرساختی وجود داره آرش! اگرچه در زمان استنتاج، بار محاسباتی (FLOPs) کاهش پیدا می‌کنه، اما آیا وزن تمام کارشناس‌ها همچنان باید در حافظه ویدیویی کارت گرافیک بارگذاری بشه؟ چطور با VRAM محدود یک کلاستر این بحران مدیریت میشه؟»
+            </p>
+          </div>
+
+          <!-- خط ۳ -->
+          <div onclick="jumpToSecond(238)" class="p-3 rounded-xl bg-obsidian-850/60 hover:bg-obsidian-850 border border-neutral-800/80 cursor-pointer transition-all">
+            <div class="flex items-center justify-between text-xs mb-1">
+              <span class="font-bold text-blue-400 flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs">play_circle</span> آرش (پژوهشگر معمار):
+              </span>
+              <span class="text-[11px] text-neutral-500">۰۳:۵۸</span>
+            </div>
+            <p class="text-xs md:text-sm text-neutral-300 leading-relaxed">
+              «نکته فوق‌العاده حساسی رو مطرح کردی! دقیقاً همینجاست که تکنیک‌های Offloading لایه‌ای و تبدیل وزن‌ها به فرمت کوانتیزه FP8 یا AWQ به بازی میان. به جای نگه داشتن همه متخصصین در HBM، متخصصین کم‌استفاده روی حافظه رم اصلی سیستم پارک میشن...»
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- 5️⃣ صفحه: اسلاید دک سخنرانی (SLIDE DECK) -->
+    <section id="screen-slides" class="app-screen">
+      <div class="max-w-4xl mx-auto space-y-6">
+        
+        <!-- هدر اسلاید و مشخصات علمی -->
+        <div class="flex items-center justify-between text-xs text-neutral-400">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-gold-400">slideshow</span>
+            <span class="font-bold text-neutral-200">اسلاید دک سمینار تخصصی</span>
+            <span class="px-2 py-0.5 rounded bg-gold-500/10 text-gold-400 border border-gold-500/30">اسلاید ۳ از ۸</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="prevSlide()" class="p-1.5 rounded-lg bg-obsidian-850 hover:bg-neutral-800 border border-neutral-800">
+              <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            </button>
+            <span class="text-neutral-300 font-bold" id="slideIndexLabel">۳ / ۸</span>
+            <button onclick="nextSlide()" class="p-1.5 rounded-lg bg-obsidian-850 hover:bg-neutral-800 border border-neutral-800">
+              <span class="material-symbols-outlined text-sm">arrow_back</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- صحنه اسلاید فعال (Slide Stage) -->
+        <div class="glass-card rounded-3xl p-6 md:p-8 border border-gold-500/30 gold-border-glow min-h-[380px] flex flex-col justify-between relative overflow-hidden">
+          <div class="relative z-10">
+            <div class="flex items-center justify-between text-xs text-neutral-400 mb-4 border-b border-neutral-800/80 pb-3">
+              <span class="text-gold-400 font-bold">بخش ۲: منطق محاسباتی توکن‌ها</span>
+              <span class="flex items-center gap-1 text-[11px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">
+                <span class="material-symbols-outlined text-xs">verified</span> تایید محتوای RAG
+              </span>
+            </div>
+
+            <h2 class="text-xl md:text-2xl font-bold text-neutral-100 mb-4 leading-snug">
+              سازوکار شبکه‌های مسیریاب خلوت (Sparse Gating Network)
+            </h2>
+
+            <!-- دیاگرام بصری روتینگ -->
+            <div class="my-6 p-4 rounded-2xl bg-obsidian-950 border border-neutral-800 flex flex-col sm:flex-row items-center justify-around gap-4 text-xs">
+              <div class="text-center p-3 rounded-xl bg-obsidian-850 border border-neutral-700">
+                <span class="material-symbols-outlined text-blue-400 text-2xl mb-1">input</span>
+                <div class="font-bold">توکن ورودی</div>
+              </div>
+              <div class="text-gold-400 flex items-center gap-1">
+                <span class="text-xs">Router (Top-2)</span>
+                <span class="material-symbols-outlined">trending_flat</span>
+              </div>
+              <div class="grid grid-cols-2 gap-2 text-[11px]">
+                <div class="p-2 rounded bg-gold-500/20 border border-gold-500/40 text-gold-300 font-bold">Expert 04 ●</div>
+                <div class="p-2 rounded bg-gold-500/20 border border-gold-500/40 text-gold-300 font-bold">Expert 32 ●</div>
+                <div class="p-2 rounded bg-neutral-900 text-neutral-500">Expert 12 (خاموش)</div>
+                <div class="p-2 rounded bg-neutral-900 text-neutral-500">Expert 58 (خاموش)</div>
+              </div>
+            </div>
+
+            <!-- نکات بولت‌وار اسلاید -->
+            <ul class="space-y-2 text-xs md:text-sm text-neutral-300 list-disc list-inside leading-relaxed">
+              <li>تفکیک لایه‌های محاسباتی به کارشناسان تخصصی (Feed-Forward Experts).</li>
+              <li>مسیریابی مشروط توکن‌ها به جای فعال‌سازی تمامی ۶۴ کارشناس همزمان.</li>
+              <li>کاهش ۶۵ درصدی محاسبات FLOPs در زمان پردازش و استنتاج بلادرنگ.</li>
+            </ul>
+          </div>
+
+          <!-- فوتر اسلاید و مشخصات دانشگاهی -->
+          <div class="relative z-10 mt-6 pt-4 border-t border-neutral-800/80 flex items-center justify-between text-[11px] text-neutral-400">
+            <span>استناد: <b>گزارش فنی DeepSeek-V3، ص ۱۲</b></span>
+            <span class="text-gold-400 font-medium">تهیه و تنظیم: دکتر رضا مکرم • هیئت علمی دانشگاه</span>
+            <span class="text-neutral-500">TopNote Engine™</span>
+          </div>
+        </div>
+
+        <!-- بخش یادداشت‌های ارائه‌دهنده (Speaker Notes) -->
+        <div class="glass-card rounded-2xl p-4 border border-neutral-800 text-xs space-y-2">
+          <div class="flex items-center justify-between text-neutral-300 font-bold">
+            <span class="flex items-center gap-1.5 text-gold-400">
+              <span class="material-symbols-outlined text-sm">record_voice_over</span>
+              یادداشت‌های ارائه‌دهنده (Speaker Notes) — توصیه‌های صوتی و لحن کلام
+            </span>
+            <span class="text-[10px] text-neutral-400">زمان تخمینی این اسلاید: ۱:۱۵ دقیقه</span>
+          </div>
+          <p class="text-neutral-300 leading-relaxed bg-obsidian-900/60 p-3 rounded-xl border border-neutral-800">
+            «هنگام ارائه این اسلاید، تأکید کنید که چالش اصلی در معماری MoE میزان مصرف محاسباتی در هسته‌های تانسوری نیست، بلکه سربار حافظه VRAM جهت بارگذاری اوزان تمام کارشناسان در کارت‌های گرافیک است. حتماً به راهکار آف‌لودینگ دینامیک حافظه در اسلاید بعد اشاره داشته باشید تا شنوندگان دید اجرایی پیدا کنند.»
+          </p>
+        </div>
+
+        <!-- دکمه‌های اکشن اسلاید دک -->
+        <div class="flex items-center justify-between gap-3">
+          <button onclick="alert('فایل ارائه با فرمت PowerPoint (.pptx) و PDF تولید شد.')" class="flex-1 py-2.5 rounded-xl bg-gold-500 hover:bg-gold-400 text-obsidian-950 font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-gold-500/20">
+            <span class="material-symbols-outlined text-base">download</span>
+            دانلود کامل اسلایدها (PowerPoint / PDF)
+          </button>
+          <button onclick="alert('کد Markdown اسلایدها با تفکیک Speaker Notes در کلیپ‌بورد کپی شد.')" class="px-4 py-2.5 rounded-xl bg-obsidian-850 hover:bg-neutral-800 border border-neutral-700 text-neutral-200 text-xs flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-base">content_copy</span>
+            کپی فرمت Markdown
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- 6️⃣ صفحه: فلش‌کارت‌های مرور فعال و آزمون هوشمند (FLASHCARDS & QUIZ) -->
+    <section id="screen-flashcards" class="app-screen">
+      <div class="max-w-3xl mx-auto space-y-6">
+        
+        <!-- هدر و اطلاعات پیشرفت لایتنر -->
+        <div class="glass-card rounded-2xl p-4 border border-gold-500/30 flex items-center justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="px-2 py-0.5 rounded bg-gold-500/15 text-gold-400 border border-gold-500/30 text-xs font-bold">الگوریتم SM-2 لایتنر هوشمند</span>
+              <span class="text-xs text-neutral-400">کارت ۴ از ۱۲</span>
+            </div>
+            <h2 class="text-base font-bold text-neutral-100">فلش‌کارت‌های مرور فعال و تثبیت در حافظه بلندمدت</h2>
+          </div>
+          <div class="text-left">
+            <span class="text-xs text-neutral-400 block">یادآوری موفق:</span>
+            <span class="text-base font-bold text-emerald-400">۷۵٪ مسلط</span>
+          </div>
+        </div>
+
+        <!-- کارت تعاملی سه‌بعدی فلش‌کارت -->
+        <div id="flashcardBox" onclick="flipFlashcard()" class="glass-card rounded-3xl p-6 md:p-8 border border-gold-500/40 gold-border-glow cursor-pointer min-h-[260px] flex flex-col justify-between transition-all duration-300 relative">
+          
+          <!-- برچسب وضعیت کارت -->
+          <div class="flex items-center justify-between text-xs text-neutral-400 border-b border-neutral-800/80 pb-3">
+            <span id="cardFaceLabel" class="text-gold-400 font-bold flex items-center gap-1">
+              <span class="material-symbols-outlined text-sm">help</span> روی کارت: پرسش تحلیلی (Active Recall)
+            </span>
+            <span class="text-[11px] bg-obsidian-850 px-2 py-0.5 rounded border border-neutral-800 text-neutral-300">برای وارونه کردن لمس کنید ↺</span>
+          </div>
+
+          <!-- محتوای متغیر کارت (پرسش / پاسخ) -->
+          <div class="py-4 text-center">
+            <h3 id="cardMainText" class="text-base md:text-lg font-bold text-neutral-100 leading-relaxed">
+              در معماری MoE، نقش لایه مسیریاب خلوت (Sparse Gating Network) در مهار انفجار مصرف حافظه VRAM چیست؟
+            </h3>
+            <div id="cardCitationNote" class="mt-3 text-xs text-neutral-400">
+              استناد به منبع: <span class="text-gold-400">[[src_001:3]] گزارش فنی DeepSeek-V3، ص ۱۲</span>
+            </div>
+          </div>
+
+          <!-- راهنمای فوتر کارت -->
+          <div class="text-center text-[11px] text-neutral-500 border-t border-neutral-800/80 pt-3">
+            تهیه و تایید علمی: <b>دکتر رضا مکرم</b> • عضو هیئت علمی دانشگاه
+          </div>
+        </div>
+
+        <!-- کلیدهای بازخورد الگوریتم لایتنر برای کارت -->
+        <div class="grid grid-cols-3 gap-3">
+          <button onclick="gradeCard('hard')" class="p-3 rounded-2xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs font-bold text-center transition-all">
+            <span class="block text-sm mb-1">☹️ دشوار</span>
+            <span class="text-[10px] text-rose-400/80 font-normal">تکرار: فردا (۱ روز)</span>
+          </button>
+          <button onclick="gradeCard('medium')" class="p-3 rounded-2xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 text-xs font-bold text-center transition-all">
+            <span class="block text-sm mb-1">😐 تا حدی مسلط</span>
+            <span class="text-[10px] text-amber-400/80 font-normal">تکرار: ۳ روز بعد</span>
+          </button>
+          <button onclick="gradeCard('easy')" class="p-3 rounded-2xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-bold text-center transition-all">
+            <span class="block text-sm mb-1">😀 تسلط کامل</span>
+            <span class="text-[10px] text-emerald-400/80 font-normal">تکرار: ۷ روز بعد</span>
+          </button>
+        </div>
+
+        <!-- آزمون تستی خودکار همراه با تایمر -->
+        <div class="glass-card rounded-2xl p-5 border border-neutral-800 space-y-4">
+          <div class="flex items-center justify-between border-b border-neutral-800 pb-3">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-gold-400 text-lg">check_circle</span>
+              <h3 class="font-bold text-sm text-neutral-200">آزمون تستی تشخیصی هوشمند (Diagnostic Quiz)</h3>
+            </div>
+            <span class="text-xs px-2 py-0.5 rounded bg-neutral-800 text-neutral-400">زمان: ۳۰ ثانیه</span>
+          </div>
+
+          <div class="space-y-3">
+            <p class="text-xs md:text-sm text-neutral-200 font-semibold leading-relaxed">
+              اصلی‌ترین گلوگاه تاخیر (Latency Bottleneck) هنگام فراخوانی لایه MoE در سرورهای با پهنای باند حافظه اشتراکی چیست؟
+            </p>
+
+            <div class="space-y-2">
+              <div onclick="selectQuizOption(1)" id="quizOpt1" class="p-3 rounded-xl bg-obsidian-850 hover:bg-neutral-800 border border-neutral-800 text-xs text-neutral-300 cursor-pointer transition-all flex items-center justify-between">
+                <span>۱. عدم همگرایی در تابع تلفات Cross-Entropy</span>
+                <span class="w-4 h-4 rounded-full border border-neutral-600"></span>
+              </div>
+              <div onclick="selectQuizOption(2)" id="quizOpt2" class="p-3 rounded-xl bg-gold-500/10 border border-gold-500/40 text-xs text-gold-300 cursor-pointer transition-all flex items-center justify-between font-medium">
+                <span>۲. تاخیر ارتباطی All-to-All بین کارت‌های GPU حین جابجایی تانسور توکن‌ها</span>
+                <span class="material-symbols-outlined text-emerald-400 text-sm">check_circle</span>
+              </div>
+              <div onclick="selectQuizOption(3)" id="quizOpt3" class="p-3 rounded-xl bg-obsidian-850 hover:bg-neutral-800 border border-neutral-800 text-xs text-neutral-300 cursor-pointer transition-all flex items-center justify-between">
+                <span>۳. سرریز بافر کش در لایه Softmax خروجی</span>
+                <span class="w-4 h-4 rounded-full border border-neutral-600"></span>
+              </div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs text-emerald-300 leading-relaxed">
+              <b>پاسخ صحیح: گزینه ۲.</b> طبق سند شماره ۱، پهنای باند NVLink بین کارت‌های گرافیکی عامل محدودکننده سوئیچینگ بین کارشناسان است.
+            </div>
+          </div>
+        </div>
+
+        <!-- دکمه دانلود بسته Anki -->
+        <button onclick="alert('دانلود بسته کامل Anki (.apkg) و نسخه PDF آزمون آغاز شد.')" class="w-full py-3 rounded-2xl bg-gold-500 hover:bg-gold-400 text-obsidian-950 font-bold text-xs flex items-center justify-center gap-2 shadow-xl shadow-gold-500/20">
+          <span class="material-symbols-outlined text-lg">download</span>
+          دانلود بسته استاندارد Anki (.apkg) و PDF آزمون
+        </button>
+
+      </div>
+    </section>
+
+
+    <!-- 7️⃣ صفحه: تنظیمات اتصال دوگانه API و دیتابیس (SETTINGS) -->
+    <section id="screen-settings" class="app-screen">
+      <div class="max-w-2xl mx-auto space-y-6">
+        
+        <div class="flex items-center justify-between border-b border-neutral-800 pb-3">
+          <div>
+            <h2 class="text-base font-bold text-neutral-100 flex items-center gap-2">
+              <span class="material-symbols-outlined text-gold-400">tune</span>
+              تنظیمات موتور استنتاج و پایگاه وکتور
+            </h2>
+            <p class="text-xs text-neutral-400 mt-0.5">پیکربندی کلیدها و موتورهای استنتاج هوش مصنوعی با رمزنگاری محلی</p>
+          </div>
+          <button onclick="switchTab('chat')" class="text-xs text-neutral-400 hover:text-gold-400 flex items-center gap-1">
+            بازگشت به چت <span class="material-symbols-outlined text-sm">close</span>
+          </button>
+        </div>
+
+        <!-- حالت انتخاب ارائه‌دهنده (Provider Toggle) -->
+        <div class="glass-card rounded-2xl p-4 border border-neutral-800 space-y-4">
+          <span class="text-xs font-bold text-neutral-300 block">ارائه‌دهنده هوش مصنوعی (AI Provider):</span>
+          
+          <div class="grid grid-cols-2 gap-3">
+            <button onclick="setProvider('gemini')" id="providerBtnGemini" class="p-3 rounded-xl bg-gold-500/15 border border-gold-500/40 text-gold-400 font-bold text-xs flex items-center justify-center gap-2">
+              <span class="material-symbols-outlined text-base">auto_awesome</span>
+              Google Gemini (پیش‌فرض)
+            </button>
+            <button onclick="setProvider('openai')" id="providerBtnOpenai" class="p-3 rounded-xl bg-obsidian-850 border border-neutral-800 text-neutral-400 hover:text-neutral-200 font-medium text-xs flex items-center justify-center gap-2">
+              <span class="material-symbols-outlined text-base">memory</span>
+              اتصال دستی / محلی
+            </button>
+          </div>
+
+          <!-- ورودی کلید Gemini -->
+          <div id="geminiConfigBox" class="space-y-3 pt-2">
+            <div class="flex items-center justify-between text-xs">
+              <label class="text-neutral-300">کلید دسترسی Google AI Studio:</label>
+              <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-gold-400 hover:underline text-[11px] flex items-center gap-0.5">
+                دریافت رایگان کلید <span class="material-symbols-outlined text-xs">open_in_new</span>
+              </a>
+            </div>
+            <div class="relative">
+              <input type="password" id="geminiApiKeyInput" value="AIzaSyB_demo_key_topnote_secured_2025" class="w-full bg-obsidian-900 border border-neutral-700 rounded-xl px-3 py-2 text-xs text-neutral-200 focus:outline-none focus:border-gold-500 font-mono">
+              <button onclick="toggleKeyVisibility()" class="absolute left-2.5 top-2 text-neutral-400 hover:text-neutral-200">
+                <span class="material-symbols-outlined text-sm" id="keyVisIcon">visibility</span>
+              </button>
+            </div>
+            <p class="text-[11px] text-neutral-500">کلید به صورت امن در Keychain محلی مرورگر شما ذخیره شده و هرگز به سرور دیگری ارسال نمی‌شود.</p>
+          </div>
+
+          <!-- انتخاب مدل استنتاج -->
+          <div class="space-y-2 pt-2 border-t border-neutral-800">
+            <label class="text-xs text-neutral-300 block">هسته استنتاج تحلیلی (Reasoning Core):</label>
+            <select id="modelSelect" class="w-full bg-obsidian-900 border border-neutral-700 rounded-xl px-3 py-2 text-xs text-neutral-200 focus:outline-none focus:border-gold-500">
+              <option value="gemini-2.5-pro">Google Gemini 2.5 Pro (حداکثر قدرت استدلال، مناسب اسناد دانشگاهی)</option>
+              <option value="gemini-2.5-flash">Google Gemini 2.5 Flash (پاسخ‌دهی زیر ثانیه، ایده‌آل برای مرورهای سریع)</option>
+              <option value="custom-local">Local Ollama / vLLM (اجرای لوکال بدون نیاز به اینترنت)</option>
+            </select>
+          </div>
+
+          <!-- دکمه تست اتصال -->
+          <button onclick="testApiConnection()" class="w-full py-2.5 rounded-xl bg-obsidian-800 hover:bg-neutral-700 border border-neutral-700 text-gold-400 font-bold text-xs flex items-center justify-center gap-1.5 transition-all">
+            <span class="material-symbols-outlined text-sm">network_check</span>
+            تست اتصال به سرور هوش مصنوعی (Test Connection)
+          </button>
+        </div>
+
+        <!-- وضعیت ذخیره‌سازی داده‌ها (Vector Storage Management) -->
+        <div class="glass-card rounded-2xl p-4 border border-neutral-800 space-y-3">
+          <span class="text-xs font-bold text-neutral-300 block flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-gold-400 text-sm">inventory_2</span>
+            مدیریت حافظه محلی و کش اسناد
+          </span>
+          <div class="flex items-center justify-between text-xs text-neutral-400">
+            <span>حافظه درگیر این نوت‌بوک:</span>
+            <span class="text-neutral-200 font-bold">۱۴.۶ مگابایت / ۵۱۲ مگابایت</span>
+          </div>
+          <div class="w-full bg-neutral-800 h-2 rounded-full overflow-hidden">
+            <div class="bg-gold-500 h-full rounded-full" style="width: 4%"></div>
+          </div>
+          <div class="flex items-center gap-2 pt-2">
+            <button onclick="exportAllNotebookData()" class="flex-1 py-2 rounded-xl bg-obsidian-850 hover:bg-neutral-800 border border-neutral-700 text-xs text-neutral-200">
+              خروجی کل نوت‌بوک (JSON)
+            </button>
+            <button onclick="clearAllCache()" class="py-2 px-4 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-xs text-rose-300">
+              پاکسازی کش
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== TAB BAR پایینی (مخصوص موبایل و ناوبری سریع) ==================== -->
+  <nav class="fixed bottom-0 left-0 right-0 z-50 bg-obsidian-900/95 backdrop-blur-xl border-t border-neutral-800/80 px-2 py-1.5 md:hidden">
+    <div class="flex items-center justify-around">
+      
+      <!-- تب گفتگو -->
+      <button onclick="switchTab('chat')" id="navBtn-chat" class="flex flex-col items-center py-1 px-3 text-gold-400">
+        <span class="material-symbols-outlined text-xl fill">forum</span>
+        <span class="text-[10px] mt-0.5 font-bold">گفتگو و RAG</span>
+      </button>
+
+      <!-- تب استودیو -->
+      <button onclick="switchTab('studio')" id="navBtn-studio" class="flex flex-col items-center py-1 px-3 text-neutral-400 hover:text-gold-400">
+        <span class="material-symbols-outlined text-xl">auto_fix_high</span>
+        <span class="text-[10px] mt-0.5 font-medium">استودیو</span>
+      </button>
+
+      <!-- تب منابع -->
+      <button onclick="switchTab('sources')" id="navBtn-sources" class="flex flex-col items-center py-1 px-3 text-neutral-400 hover:text-gold-400">
+        <span class="material-symbols-outlined text-xl">dataset</span>
+        <span class="text-[10px] mt-0.5 font-medium">منابع (۵)</span>
+      </button>
+
+      <!-- تب پادکست -->
+      <button onclick="switchTab('podcast')" id="navBtn-podcast" class="flex flex-col items-center py-1 px-3 text-neutral-400 hover:text-gold-400">
+        <span class="material-symbols-outlined text-xl">podcasts</span>
+        <span class="text-[10px] mt-0.5 font-medium">پادکست</span>
+      </button>
+
+      <!-- تب اسلاید -->
+      <button onclick="switchTab('slides')" id="navBtn-slides" class="flex flex-col items-center py-1 px-3 text-neutral-400 hover:text-gold-400">
+        <span class="material-symbols-outlined text-xl">slideshow</span>
+        <span class="text-[10px] mt-0.5 font-medium">اسلایدها</span>
+      </button>
+
+      <!-- تب فلش‌کارت -->
+      <button onclick="switchTab('flashcards')" id="navBtn-flashcards" class="flex flex-col items-center py-1 px-3 text-neutral-400 hover:text-gold-400">
+        <span class="material-symbols-outlined text-xl">style</span>
+        <span class="text-[10px] mt-0.5 font-medium">کارت‌ها</span>
+      </button>
+
+    </div>
+  </nav>
+
+  <!-- نوار ناوبری دسکتاپ شناور بالا/پایین برای راحتی دسترسی -->
+  <div class="hidden md:flex fixed bottom-6 left-1/2 -translate-x-1/2 z-50 glass-card px-3 py-2 rounded-2xl border border-gold-500/30 gold-border-glow items-center gap-2 shadow-2xl">
+    <button onclick="switchTab('chat')" id="dNavBtn-chat" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-gold-500/20 text-gold-400 border border-gold-500/40 flex items-center gap-1.5">
+      <span class="material-symbols-outlined text-base">forum</span> گفتگو و RAG
+    </button>
+    <button onclick="switchTab('studio')" id="dNavBtn-studio" class="px-3 py-1.5 rounded-xl text-xs font-medium text-neutral-300 hover:text-gold-400 hover:bg-neutral-800/60 flex items-center gap-1.5">
+      <span class="material-symbols-outlined text-base">auto_fix_high</span> استودیو (۸ خروجی)
+    </button>
+    <button onclick="switchTab('sources')" id="dNavBtn-sources" class="px-3 py-1.5 rounded-xl text-xs font-medium text-neutral-300 hover:text-gold-400 hover:bg-neutral-800/60 flex items-center gap-1.5">
+      <span class="material-symbols-outlined text-base">dataset</span> مدیریت منابع
+    </button>
+    <button onclick="switchTab('podcast')" id="dNavBtn-podcast" class="px-3 py-1.5 rounded-xl text-xs font-medium text-neutral-300 hover:text-gold-400 hover:bg-neutral-800/60 flex items-center gap-1.5">
+      <span class="material-symbols-outlined text-base">podcasts</span> پادکست هوشمند
+    </button>
+    <button onclick="switchTab('slides')" id="dNavBtn-slides" class="px-3 py-1.5 rounded-xl text-xs font-medium text-neutral-300 hover:text-gold-400 hover:bg-neutral-800/60 flex items-center gap-1.5">
+      <span class="material-symbols-outlined text-base">slideshow</span> اسلاید دک
+    </button>
+    <button onclick="switchTab('flashcards')" id="dNavBtn-flashcards" class="px-3 py-1.5 rounded-xl text-xs font-medium text-neutral-300 hover:text-gold-400 hover:bg-neutral-800/60 flex items-center gap-1.5">
+      <span class="material-symbols-outlined text-base">style</span> فلش‌کارت و کوئیز
+    </button>
+  </div>
+
+  <!-- ==================== CITATION MODAL (پاپ‌آپ استناد دقیق منبع) ==================== -->
+  <div id="citationModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="glass-card max-w-lg w-full rounded-3xl p-6 border border-gold-500/50 gold-border-glow space-y-4 animate-scale-up">
+      <div class="flex items-center justify-between border-b border-neutral-800 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-gold-400">verified</span>
+          <h3 class="font-bold text-sm text-neutral-100" id="modalDocTitle">استناد دقیق به سند</h3>
+        </div>
+        <button onclick="closeCitationModal()" class="text-neutral-400 hover:text-neutral-100">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="space-y-2 text-xs">
+        <div class="flex items-center justify-between text-neutral-400">
+          <span id="modalDocPage">صفحه ۱۲</span>
+          <span class="text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">Grounding Verified</span>
+        </div>
+        <div class="p-3.5 rounded-xl bg-obsidian-950 border border-neutral-800/80 text-neutral-200 text-xs md:text-sm leading-relaxed" id="modalDocSnippet">
+          متن بخش استناد شده...
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between pt-2 text-[11px] text-neutral-400">
+        <span>شاخص شباهت کسینوسی بردار: <b>0.94</b></span>
+        <button onclick="closeCitationModal()" class="px-4 py-1.5 rounded-xl bg-gold-500 hover:bg-gold-400 text-obsidian-950 font-bold">
+          متوجه شدم
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== JAVASCRIPT کامل و یکپارچه نرم‌افزار ==================== -->
+  <script>
+    // متغیرهای وضعیت سراسری اپلیکیشن
+    let currentTab = 'chat';
+    let isPlaying = true;
+    let podcastTime = 204; // ثانیه ۳:۲۴
+    let currentSlide = 3;
+    let isFlipped = false;
+
+    // جابجایی تب‌ها
+    function switchTab(tabId) {
+      currentTab = tabId;
+      // پنهان کردن تمام صفحات
+      document.querySelectorAll('.app-screen').forEach(el => {
+        el.classList.remove('active');
+      });
+      // فعال‌سازی صفحه مورد نظر
+      const targetScreen = document.getElementById('screen-' + tabId);
+      if (targetScreen) {
+        targetScreen.classList.add('active');
+      }
+
+      // به‌روزرسانی استایل دکمه‌های ناوبری موبایل
+      const tabs = ['chat', 'studio', 'sources', 'podcast', 'slides', 'flashcards'];
+      tabs.forEach(t => {
+        const mBtn = document.getElementById('navBtn-' + t);
+        if (mBtn) {
+          if (t === tabId) {
+            mBtn.className = 'flex flex-col items-center py-1 px-3 text-gold-400';
+            const icon = mBtn.querySelector('.material-symbols-outlined');
+            if (icon) icon.classList.add('fill');
+          } else {
+            mBtn.className = 'flex flex-col items-center py-1 px-3 text-neutral-400 hover:text-gold-400';
+            const icon = mBtn.querySelector('.material-symbols-outlined');
+            if (icon) icon.classList.remove('fill');
+          }
+        }
+
+        // ناوبری دسکتاپ
+        const dBtn = document.getElementById('dNavBtn-' + t);
+        if (dBtn) {
+          if (t === tabId) {
+            dBtn.className = 'px-3 py-1.5 rounded-xl text-xs font-bold bg-gold-500/20 text-gold-400 border border-gold-500/40 flex items-center gap-1.5';
+          } else {
+            dBtn.className = 'px-3 py-1.5 rounded-xl text-xs font-medium text-neutral-300 hover:text-gold-400 hover:bg-neutral-800/60 flex items-center gap-1.5';
+          }
+        }
+      });
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // جابجایی بین ۳ دفترچه
+    function switchNotebook(value) {
+      const titles = {
+        'ai': 'کاربردهای هوش مصنوعی',
+        'psych': 'روانشناسی و توسعه فردی',
+        'tech': 'فناوری‌های پیشرفته نوین'
+      };
+      const label = titles[value] || 'دفترچه فعال';
+      const mLabel = document.getElementById('mobileNotebookLabel');
+      if (mLabel) mLabel.textContent = label;
+      alert(`دفترچه یادداشت با موفقیت به «${label}» جابجا شد. اسناد و وکتورهای اختصاصی بارگذاری گردیدند.`);
+    }
+
+    // سیستم ارسال پیام چت
+    function sendChatMessage() {
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const chatList = document.getElementById('chatMessageList');
+
+      // اضافه کردن حباب پیام کاربر
+      const userBubble = document.createElement('div');
+      userBubble.className = 'flex justify-start';
+      userBubble.innerHTML = `
+        <div class="max-w-[85%] bg-obsidian-850 border border-neutral-700/60 rounded-2xl rounded-tr-sm p-3.5 shadow-md">
+          <div class="flex items-center justify-between text-[11px] text-neutral-400 mb-1.5">
+            <span class="font-medium text-gold-400">شما (پژوهشگر)</span>
+            <span>هم‌اکنون</span>
+          </div>
+          <p class="text-sm leading-relaxed text-neutral-200">${text}</p>
+        </div>
+      `;
+      chatList.appendChild(userBubble);
+      input.value = '';
+      chatList.scrollTop = chatList.scrollHeight;
+
+      // شبیه‌سازی پاسخ هوشمند استریمینگ RAG با استناد
+      setTimeout(() => {
+        const aiBubble = document.createElement('div');
+        aiBubble.className = 'flex justify-end';
+        aiBubble.innerHTML = `
+          <div class="max-w-[90%] bg-gradient-to-br from-obsidian-900 to-obsidian-850 border border-gold-500/30 rounded-2xl rounded-tl-sm p-4 shadow-xl gold-border-glow">
+            <div class="flex items-center justify-between text-[11px] text-neutral-400 mb-2 border-b border-neutral-800 pb-2">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-gold-400 text-sm">psychology</span>
+                <span class="font-bold text-gold-400">پژوهشگر هوشمند TopNote</span>
+              </div>
+              <span class="text-[10px] bg-gold-500/10 text-gold-300 px-2 py-0.5 rounded border border-gold-500/20">تطبیق بلادرنگ ۱۰۰٪</span>
+            </div>
+            <p class="text-sm leading-relaxed text-neutral-200">
+              در پاسخ به پرسش شما درباره <b>«${text}»</b>، طبق سند شماره ۱ و متون استخراج شده، این سازوکار به صورت مستقیم منجر به بهبود بازدهی مصرف حافظه و کاهش زمان تاخیر استنتاج می‌گردد.
+              <button onclick="openCitationModal('src_001', 'گزارش فنی معماری MoE', 'صفحه ۸', 'ارجاع به تحلیل ریاضی شبکه‌های تنک و ضرایب توزیع نرمال.')" class="inline-flex items-center gap-1 mx-1 px-1.5 py-0.5 rounded bg-gold-500/20 text-gold-300 border border-gold-500/40 text-[11px]">
+                <span class="material-symbols-outlined text-[12px]">bookmark</span> [src_001:4]
+              </button>
+            </p>
+          </div>
+        `;
+        chatList.appendChild(aiBubble);
+        chatList.scrollTop = chatList.scrollHeight;
+      }, 700);
+    }
+
+    function askPreset(promptText) {
+      document.getElementById('chatInput').value = promptText;
+      sendChatMessage();
+    }
+
+    function clearChat() {
+      if (confirm('آیا مایلید تاریخچه گفتگوی جاری پاکسازی شود؟')) {
+        document.getElementById('chatMessageList').innerHTML = `
+          <div class="text-center py-8 text-neutral-500 text-xs">
+            گفتگوی جدید آغاز شد. سؤال خود را درباره اسناد بارگذاری‌شده بپرسید.
+          </div>
+        `;
+      }
+    }
+
+    // پاپ‌آپ استناد (Citation Modal)
+    function openCitationModal(id, title, page, snippet) {
+      document.getElementById('modalDocTitle').textContent = title;
+      document.getElementById('modalDocPage').textContent = page;
+      document.getElementById('modalDocSnippet').textContent = snippet;
+      const modal = document.getElementById('citationModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeCitationModal() {
+      const modal = document.getElementById('citationModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // کنترل‌های پلیر پادکست
+    function togglePlayPodcast() {
+      isPlaying = !isPlaying;
+      const btn = document.getElementById('playPauseBtn');
+      const wave = document.getElementById('soundwaveContainer');
+      if (isPlaying) {
+        btn.innerHTML = `<span class="material-symbols-outlined text-2xl fill">pause</span>`;
+        wave.style.opacity = '1';
+      } else {
+        btn.innerHTML = `<span class="material-symbols-outlined text-2xl fill">play_arrow</span>`;
+        wave.style.opacity = '0.4';
+      }
+    }
+
+    function seekPodcast(event) {
+      const rect = event.currentTarget.getBoundingClientRect();
+      const pos = (event.clientX - rect.left) / rect.width;
+      podcastTime = Math.floor(pos * 645); // ۶۴۵ ثانیه کل
+      document.getElementById('podcastProgressBar').style.width = (pos * 100) + '%';
+    }
+
+    function jumpToSecond(sec) {
+      podcastTime = sec;
+      const progress = (sec / 645) * 100;
+      document.getElementById('podcastProgressBar').style.width = progress + '%';
+      alert(`پخش پادکست به زمان ثانیه ${sec} جابجا شد.`);
+    }
+
+    function speedPodcast() {
+      const btn = document.getElementById('speedBtn');
+      if (btn.textContent.includes('1.25x')) {
+        btn.textContent = '1.5x';
+      } else if (btn.textContent.includes('1.5x')) {
+        btn.textContent = '1.0x';
+      } else {
+        btn.textContent = '1.25x';
+      }
+    }
+
+    function skipPodcast(delta) {
+      podcastTime = Math.max(0, Math.min(645, podcastTime + delta));
+      const progress = (podcastTime / 645) * 100;
+      document.getElementById('podcastProgressBar').style.width = progress + '%';
+    }
+
+    // اسلایدر سخنرانی
+    function nextSlide() {
+      if (currentSlide < 8) currentSlide++;
+      updateSlideDisplay();
+    }
+    function prevSlide() {
+      if (currentSlide > 1) currentSlide--;
+      updateSlideDisplay();
+    }
+    function updateSlideDisplay() {
+      document.getElementById('slideIndexLabel').textContent = `${currentSlide} / ۸`;
+    }
+
+    // فلش‌کارت سه‌بعدی
+    function flipFlashcard() {
+      isFlipped = !isFlipped;
+      const mainText = document.getElementById('cardMainText');
+      const label = document.getElementById('cardFaceLabel');
+      const box = document.getElementById('flashcardBox');
+
+      if (isFlipped) {
+        label.innerHTML = `<span class="material-symbols-outlined text-sm">lightbulb</span> پشت کارت: پاسخ تشریحی سنتز شده (AI)`;
+        mainText.innerHTML = `
+          <div class="text-xs md:text-sm text-right space-y-2 font-normal leading-relaxed text-neutral-200">
+            <div>• لایه Gating به جای فعال‌سازی تمامی ۶۴ کارشناس، تنها <b>۲ کارشناس بهینه (Top-2)</b> را فراخوانی می‌کند.</div>
+            <div>• کاهش چشمگیر محاسبات FLOPs تا ۶۵ درصد.</div>
+            <div>• انتقال پویای کارشناسان غیرفعال به حافظه رم سیستم بر بستر الگوریتم Prefetching.</div>
+          </div>
+        `;
+        box.classList.add('border-gold-400');
+      } else {
+        label.innerHTML = `<span class="material-symbols-outlined text-sm">help</span> روی کارت: پرسش تحلیلی (Active Recall)`;
+        mainText.innerHTML = `در معماری MoE، نقش لایه مسیریاب خلوت (Sparse Gating Network) در مهار انفجار مصرف حافظه VRAM چیست؟`;
+        box.classList.remove('border-gold-400');
+      }
+    }
+
+    function gradeCard(grade) {
+      alert(`بازخورد لایتنر (${grade}) ثبت شد. زمان‌بندی تکرار کارت در الگوریتم SM-2 ذخیره گردید.`);
+      flipFlashcard();
+    }
+
+    function selectQuizOption(optNum) {
+      alert(`گزینه شماره ${optNum} انتخاب شد. طبق الگوریتم هوشمند، پاسخ صحیح گزینه ۲ می‌باشد.`);
+    }
+
+    // تنظیمات و ذخیره‌سازی
+    function setProvider(prov) {
+      const gBtn = document.getElementById('providerBtnGemini');
+      const oBtn = document.getElementById('providerBtnOpenai');
+      if (prov === 'gemini') {
+        gBtn.className = 'p-3 rounded-xl bg-gold-500/15 border border-gold-500/40 text-gold-400 font-bold text-xs flex items-center justify-center gap-2';
+        oBtn.className = 'p-3 rounded-xl bg-obsidian-850 border border-neutral-800 text-neutral-400 font-medium text-xs flex items-center justify-center gap-2';
+      } else {
+        oBtn.className = 'p-3 rounded-xl bg-gold-500/15 border border-gold-500/40 text-gold-400 font-bold text-xs flex items-center justify-center gap-2';
+        gBtn.className = 'p-3 rounded-xl bg-obsidian-850 border border-neutral-800 text-neutral-400 font-medium text-xs flex items-center justify-center gap-2';
+      }
+    }
+
+    function testApiConnection() {
+      alert('اتصال به سرور Google AI Studio با موفقیت تست شد. نرخ تاخیر (Latency): ۱۴۲ میلی‌ثانیه.');
+    }
+
+    function toggleKeyVisibility() {
+      const input = document.getElementById('geminiApiKeyInput');
+      const icon = document.getElementById('keyVisIcon');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.textContent = 'visibility_off';
+      } else {
+        input.type = 'password';
+        icon.textContent = 'visibility';
+      }
+    }
+
+    function exportAllNotebookData() {
+      alert('تمامی داده‌های نوت‌بوک، منابع برداری و تاریخچه چت در فایل topnote_backup.json صادر شد.');
+    }
+
+    function clearAllCache() {
+      if (confirm('آیا از پاکسازی پایگاه داده وکتور لوکال اطمینان دارید؟')) {
+        alert('کش با موفقیت پاکسازی شد.');
+      }
+    }
+
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        alert(`فایل «${file.name}» دریافت شد. فرآیند استخراج متن، چانکینگ ۱۰۰۰ توکنی و تبدیل به بردار آغاز گردید.`);
+      }
+    }
+
+    function promptYoutubeUrl() {
+      const url = prompt('لطفاً لینک ویدیوی یوتیوب را وارد نمایید:');
+      if (url) alert('زیرنویس و صوت ویدیو با موفقیت استخراج و به منابع وکتور افزوده شد.');
+    }
+
+    function promptWebUrl() {
+      const url = prompt('آدرس صفحه وب یا مقاله علمی را وارد کنید:');
+      if (url) alert('محتوای صفحه وب با موفقیت اسکرپ و در دیتابیس برداری ذخیره شد.');
+    }
+
+    function viewChunks(id) {
+      alert(`نمایش قطعات (Chunks) سند شماره ${id}: این سند به قطعات استاندارد با همپوشانی ۱۰۰ توکن تقسیم شده است.`);
+    }
+
+    function removeDoc(id) {
+      if (confirm(`آیا مایل به حذف سند شماره ${id} از پایگاه داده وکتور هستید؟`)) {
+        alert('سند حذف گردید.');
+      }
+    }
+
+    function copyCurrentAnswer() {
+      alert('متن پاسخ همراه با ارجاعات استنادی در کلیپ‌بورد کپی شد.');
+    }
+
+    function saveToNotes() {
+      alert('پاسخ در نوت‌های دفترچه پین گردید.');
+    }
+
+    function toggleAudioInput() {
+      alert('میکروفون فعال شد. شما می‌توانید سوال خود را به صورت صوتی بیان کنید.');
+    }
+  </script>
+</body>
+</html>
